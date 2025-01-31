@@ -1,4 +1,5 @@
 
+
 namespace MultiTenantExample;
 
 public class Program
@@ -8,6 +9,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        builder.Services.AddScoped<ITenantService, TenantService>();
+
         builder.Services.Configure<TenantSittings>(builder.Configuration.GetSection(nameof(TenantSittings)));
 
         TenantSittings options = new();
