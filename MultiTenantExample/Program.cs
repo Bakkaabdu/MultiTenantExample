@@ -20,8 +20,10 @@ public class Program
         TenantSittings options = new();
         builder.Configuration.GetSection(nameof(TenantSittings)).Bind(options);
 
+
         var defaultDbProvider = options.Defaults.DBProvider;
-        if (defaultDbProvider == "MSSQL")
+
+        if (defaultDbProvider.ToLower() == "mssql")
         {
             builder.Services.AddDbContext<ApplicationDbContext>(s => s.UseSqlServer());
         }

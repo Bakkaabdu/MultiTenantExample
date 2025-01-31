@@ -9,7 +9,7 @@ namespace MultiTenantExample.Data
         public ApplicationDbContext(DbContextOptions options, ITenantService tenantService) : base(options)
         {
             _tenantService = tenantService;
-            TenantId = _tenantService.GetCurrentTenant().TId;
+            TenantId = _tenantService.GetCurrentTenant()?.TId;
         }
 
         public DbSet<Product> Products { get; set; }
@@ -17,6 +17,7 @@ namespace MultiTenantExample.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasQueryFilter(e => e.TenantId == TenantId);
+            base.OnModelCreating(modelBuilder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
