@@ -34,8 +34,7 @@ namespace MultiTenantExample.Data
                 //else if (dbProvider == "Postgres")
                 //    optionsBuilder.UseNpgsql(tenantConnectionString);
             }
-            else
-                optionsBuilder.UseSqlServer("Server=localhost;Database=MultiTenantExample;Trusted_Connection=True;");
+
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
