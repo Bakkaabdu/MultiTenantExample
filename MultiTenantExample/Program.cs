@@ -1,4 +1,5 @@
 
+using Microsoft.EntityFrameworkCore;
 
 namespace MultiTenantExample;
 
@@ -18,6 +19,26 @@ public class Program
 
         TenantSittings options = new();
         builder.Configuration.GetSection(nameof(TenantSittings)).Bind(options);
+
+        var defaultDbProvider = options.Defaults.DBProvider;
+        if (defaultDbProvider == "MSSQL")
+        {
+            builder.Services.AddDbContext<ApplicationDbContext>(s => s.UseSqlServer());
+        }
+
+        foreach (var tenant in options.Tenants)
+        {
+            var connectionString = tenant.ConnectionString ?? options.Defaults.ConnectionString;
+            using var scope = builder.Services.BuildServiceProvider().CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            context.Database.SetConnectionString(connectionString);
+
+            if (context.Database.GetPendingMigrations().Any())
+            {
+                context.Database.Migrate();
+            }
+        }
 
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
